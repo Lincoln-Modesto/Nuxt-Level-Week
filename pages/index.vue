@@ -25,10 +25,13 @@
       >
         Abandon cycle
       </button>
+
       <button v-else class="button start" @click="setCountdownState(true)">
         Start a cycle
       </button>
     </div>
+
+		<Card class="w-full lg:w-1/2"/>
   </section>
 </template>
 
@@ -42,11 +45,13 @@ import Component from "vue-class-component";
 import CompletedChallenges from "~/components/atoms/CompletedChallenges.vue";
 import Profile from "~/components/molecules/Profile.vue";
 import Countdown from "~/components/molecules/Countdown.vue";
+import Card from "~/components/organisms/Card.vue";
 
 import { playAudio, sendNotification } from "~/utils";
 
 import { mapState, mapMutations } from "vuex";
 import { Mutations as CountdownMT } from "~/store/countdown/types";
+import { Mutations as ChallengesMT } from "~/store/challenges/types";
 
 @Component({
   head(): Head {
@@ -58,6 +63,7 @@ import { Mutations as CountdownMT } from "~/store/countdown/types";
     CompletedChallenges,
     Profile,
     Countdown,
+		Card
   },
   computed: {
     ...mapState("countdown", {
@@ -69,6 +75,7 @@ import { Mutations as CountdownMT } from "~/store/countdown/types";
     ...mapMutations({
       setCountdownHasCompleted: `countdown/${CountdownMT.SET_HAS_COMPLETED}`,
       setCountdownIsActive: `countdown/${CountdownMT.SET_IS_ACTIVE}`,
+			setCurrentChallengeIndex: `challenges/${ChallengesMT.SET_CURRENT_CHALLENGE_INDEX}`
     }),
   },
   mounted() {
@@ -77,9 +84,10 @@ import { Mutations as CountdownMT } from "~/store/countdown/types";
     }
   },
 })
-export default class extends Vue {
+export default class Index extends Vue {
   setCountdownHasCompleted!: (isActive: boolean) => Promise<void>;
   setCountdownIsActive!: (hasCompleted: boolean) => Promise<string>;
+  setCurrentChallengeIndex!: (index: number) => Promise<void>;
 
   setCountdownState(flag: boolean) {
     this.setCountdownHasCompleted(false);
