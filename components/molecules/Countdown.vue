@@ -7,11 +7,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { mapState, mapMutations, mapGetters } from 'vuex'
 import { Mutations } from '~/store/countdown/types'
 import CountdownDigits from '~/components/atoms/CountdownDigits.vue'
+
+let TIMEOUT_REFERENCE: ReturnType<typeof setTimeout>
 
 @Component({
 	components:{
@@ -30,13 +31,38 @@ import CountdownDigits from '~/components/atoms/CountdownDigits.vue'
 })
 export default class Countdown extends Vue{
 
+	setTime!: (time: number) => Promise<void>;
+	resetTime!: () => Promise<void>
+	public time!: number
+	public isActive!: boolean
 
-	runCountdown(flag: boolean){
+		@Watch('isActive')
+		isActiveChanged(newValue: boolean){
+			this.runCountdown(newValue)
+
+			if(!newValue){
+				this.resetTime()
+			}
+		}
+
+		@Watch('time')
+		timeChanged(newValue: number){
+			if(newValue > 0){
+				this.runCountdown(true)
+			}else{
+				this.$emit('completed')
+			}
+		}
+
+		runCountdown(flag: boolean){
 		if(this.isActive && flag){
-			setTimeout(() => {
+			TIMEOUT_REFERENCE = setTimeout(() => {
 				this.setTime(this.time -1)
 			}, 1000)
+		}else{
+			clearTimeout(TIMEOUT_REFERENCE)
 		}
 	}
+
 }
 </script>
