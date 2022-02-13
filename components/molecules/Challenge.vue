@@ -58,6 +58,9 @@ export default class Challenge extends Vue {
   setCurrentChallengeIndex!: (index: number | null) => Promise<void>;
   completeChallenge!: (xpAmount: number) => Promise<void>;
 
+	public level!: number
+	public xp!: object
+
   resetChallenges() {
     this.resetTime();
     this.setIsActive(false);
@@ -68,6 +71,12 @@ export default class Challenge extends Vue {
   challengeSucceeded() {
     this.resetChallenges();
     this.completeChallenge(this.amount);
-  }
+
+		/*this.$cookiz.set('movueit', {
+			level: this.level,
+			xp: this.xp,
+			completeChallenge: this.completeChallenge
+		})*/
+	}
 }
 </script>
