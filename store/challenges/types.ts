@@ -43,7 +43,7 @@ export enum Mutations {
 export type RootState = ReturnType<() => State>
 
 export interface MutationsInterface extends MutationTree<RootState> {
-	[Mutations.SET_CURRENT_CHALLENGE_INDEX](s: State, p: number): void;
+	[Mutations.SET_CURRENT_CHALLENGE_INDEX](s: State, p: number ): void;
 	[Mutations.SET_IS_LEVEL_UP_MODAL_OPEN](s: State, p: boolean): void;
 	[Mutations.COMPLETE_CHALLENGE](s: State, p: number): void;
 	[Mutations.SAVE_COOKIE_DATA](s: State, p: Cookie): void;

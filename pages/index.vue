@@ -31,7 +31,7 @@
       </button>
     </div>
 
-		<Card class="w-full lg:w-1/2"/>
+		<Card class="w-full lg:w-1/2" id="challenge"/>
   </section>
 </template>
 
@@ -47,9 +47,9 @@ import Profile from "~/components/molecules/Profile.vue";
 import Countdown from "~/components/molecules/Countdown.vue";
 import Card from "~/components/organisms/Card.vue";
 
-import { playAudio, sendNotification } from "~/utils";
+import { playAudio, sendNotification, getRamdomNumber, scrollToElement } from "~/utils";
 
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapGetters, mapMutations } from "vuex";
 import { Mutations as CountdownMT } from "~/store/countdown/types";
 import { Mutations as ChallengesMT } from "~/store/challenges/types";
 
@@ -70,6 +70,7 @@ import { Mutations as ChallengesMT } from "~/store/challenges/types";
       hasCountdownCompleted: "hasCompleted",
       isCountdownActive: "isActive",
     }),
+		...mapGetters('challenges', ['challengesLength'])
   },
   methods: {
     ...mapMutations({
@@ -89,13 +90,17 @@ export default class Index extends Vue {
   setCountdownIsActive!: (hasCompleted: boolean) => Promise<string>;
   setCurrentChallengeIndex!: (index: number) => Promise<void>;
 
+	public challengesLength!: number
+
   setCountdownState(flag: boolean) {
     this.setCountdownHasCompleted(false);
     this.setCountdownIsActive(flag);
   }
 
   getNewChallenge() {
+		const index = getRamdomNumber(0, this.challengesLength)
     this.setCountdownHasCompleted(true);
+		this.setCurrentChallengeIndex(index)
 
     if (Notification?.permission === "granted") {
       playAudio("./notification.mp3");
@@ -104,6 +109,10 @@ export default class Index extends Vue {
         icon: "./favicon.png",
       });
     }
+
+		this.$nextTick(() => {
+			scrollToElement('#challenge')
+		})
   }
 }
 </script>
